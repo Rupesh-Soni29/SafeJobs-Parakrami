@@ -192,7 +192,7 @@ function setupDropzone() {
     ['dragenter', 'dragover'].forEach(eventName => {
         dropzone.addEventListener(eventName, (e) => {
             e.preventDefault();
-            dropzone.style.borderColor = 'var(--accent-cyan)';
+            dropzone.style.borderColor = 'var(--primary-green)';
         });
     });
 
@@ -296,17 +296,17 @@ function renderScrutinyResults(data) {
     // Set score colors
     if (score >= 70) {
         scoreDial.style.borderColor = 'var(--danger-red)';
-        scoreDial.style.boxShadow = '0 0 16px var(--danger-glow)';
+        scoreDial.style.boxShadow = '0 0 16px rgba(217, 56, 58, 0.15)';
         document.getElementById('res-verdict-badge').className = 'verdict-badge badge-danger';
         document.getElementById('res-verdict-badge').innerText = 'CRITICAL SCAM ALERT';
     } else if (score >= 40) {
         scoreDial.style.borderColor = 'var(--warning-amber)';
-        scoreDial.style.boxShadow = '0 0 16px var(--warning-glow)';
+        scoreDial.style.boxShadow = '0 0 16px rgba(217, 119, 6, 0.15)';
         document.getElementById('res-verdict-badge').className = 'verdict-badge badge-warning';
         document.getElementById('res-verdict-badge').innerText = 'SUSPICIOUS RECRUITMENT';
     } else {
         scoreDial.style.borderColor = 'var(--success-green)';
-        scoreDial.style.boxShadow = '0 0 16px var(--success-glow)';
+        scoreDial.style.boxShadow = '0 0 16px rgba(57, 120, 79, 0.15)';
         document.getElementById('res-verdict-badge').className = 'verdict-badge badge-success';
         document.getElementById('res-verdict-badge').innerText = 'LIKELY LEGITIMATE';
     }
@@ -483,9 +483,9 @@ function renderCareerResult(data, searchedRole) {
                 </div>
             </div>
 
-            <div style="background:rgba(0,0,0,0.2); padding:1rem; border-radius:var(--radius-md); border:1px solid var(--border-color); margin-top:1rem;">
-                <h4 style="font-size:0.88rem; color:var(--text-secondary); margin-bottom:0.4rem;">Official Requirements & Description:</h4>
-                <p style="font-size:0.88rem; line-height:1.5;">${j.requirements}</p>
+            <div style="background:var(--bg-subtle); padding:1rem; border-radius:var(--radius-md); border:1px solid var(--border-color); margin-top:1rem;">
+                <h4 style="font-size:0.88rem; color:var(--text-muted); margin-bottom:0.4rem;">Official Requirements & Description:</h4>
+                <p style="font-size:0.88rem; line-height:1.5; color:var(--text-main);">${j.requirements}</p>
                 <div style="margin-top:0.85rem;">
                     <a href="${j.official_url || data.official_portal}" target="_blank" class="portal-link">
                         Direct Official Listing Link on ${data.official_domain} &rarr;
@@ -493,7 +493,7 @@ function renderCareerResult(data, searchedRole) {
                 </div>
             </div>
 
-            <h4 style="margin-top:1.5rem; font-size:0.95rem;">Cross-Platform Reality Check:</h4>
+            <h4 style="margin-top:1.5rem; font-size:0.95rem; color:var(--text-main);">Cross-Platform Reality Check:</h4>
             <table class="comparison-table">
                 <thead>
                     <tr>
@@ -519,9 +519,9 @@ function renderCareerResult(data, searchedRole) {
     } else {
         // Not verified on careers page
         html += `
-            <div style="background:rgba(239, 68, 68, 0.08); border-left:4px solid var(--danger-red); padding:1rem; border-radius:0 var(--radius-sm) var(--radius-sm) 0; margin-top:1rem;">
-                <h4 style="color:#fca5a5; font-size:0.92rem; margin-bottom:0.4rem;">⚠️ Warning: Ghost or Fabricated Job Opening</h4>
-                <p style="font-size:0.85rem; color:var(--text-secondary); line-height:1.5;">
+            <div style="background:var(--danger-bg); border-left:4px solid var(--danger-red); padding:1rem; border-radius:0 var(--radius-sm) var(--radius-sm) 0; margin-top:1rem;">
+                <h4 style="color:var(--danger-text); font-size:0.92rem; margin-bottom:0.4rem;">⚠️ Warning: Ghost or Fabricated Job Opening</h4>
+                <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.5;">
                     No job vacancy for <strong>"${searchedRole || 'this title'}"</strong> exists on the verified careers portal of ${data.company_name}. Scammers frequently create fake entry-level jobs on Facebook, Telegram, or WhatsApp using real corporate names to defraud jobseekers.
                 </p>
             </div>
@@ -638,7 +638,7 @@ function renderHistoryResults(data) {
             html += `
                 <div class="report-feed-item">
                     <div class="report-item-header">
-                        <div class="report-comp-title">${r.company_name} - <span style="color:var(--accent-cyan); font-size:0.85rem;">${r.job_title || 'General Offer'}</span></div>
+                        <div class="report-comp-title">${r.company_name} - <span style="color:var(--primary-green); font-size:0.85rem;">${r.job_title || 'General Offer'}</span></div>
                         <div class="report-date">${r.date_reported}</div>
                     </div>
                     <div class="report-details-row">
@@ -672,7 +672,7 @@ async function loadRecentReports() {
                 item.className = 'report-feed-item';
                 item.innerHTML = `
                     <div class="report-item-header">
-                        <div class="report-comp-title">${r.company_name} &bull; <span style="color:var(--accent-cyan); font-size:0.85rem;">${r.job_title}</span></div>
+                        <div class="report-comp-title">${r.company_name} &bull; <span style="color:var(--primary-green); font-size:0.85rem;">${r.job_title}</span></div>
                         <div class="report-date">${r.date_reported}</div>
                     </div>
                     <div class="report-details-row">
@@ -862,7 +862,7 @@ function showToast(message, type = 'info') {
     if (type === 'error') {
         toast.style.borderColor = 'var(--danger-red)';
     } else {
-        toast.style.borderColor = 'var(--accent-cyan)';
+        toast.style.borderColor = 'var(--primary-green)';
     }
     toast.classList.add('show');
     setTimeout(() => {
