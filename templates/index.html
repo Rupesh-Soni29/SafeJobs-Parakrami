@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeJobs - Local Job Scam & Vacancy Verifier</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+    <!-- TOP NAVIGATION -->
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="brand" onclick="switchTab('tab-scrutinizer')">
+                <div class="brand-icon">
+                    <span class="shield-pulse"></span>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                        <path d="m9 12 2 2 4-4"/>
+                    </svg>
+                </div>
+                <div class="brand-text">
+                    <span class="brand-title">SafeJobs</span>
+                    <span class="brand-tagline">Scam & Vacancy Verifier</span>
+                </div>
+            </div>
+
+            <nav class="nav-links">
+                <button class="nav-btn active" onclick="switchTab('tab-scrutinizer')">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                    AI Scrutinizer
+                </button>
+                <button class="nav-btn" onclick="switchTab('tab-careers')">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="16" height="20" x="4" y="2" rx="2" ry="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M8 10h.01"/><path d="M16 10h.01"/><path d="M8 14h.01"/><path d="M16 14h.01"/></svg>
+                    Official Careers Verifier
+                </button>
+                <button class="nav-btn" onclick="switchTab('tab-database')">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                    Scam Tracker & History
+                </button>
+                <button class="nav-btn" onclick="switchTab('tab-report')">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                    Report a Scam
+                </button>
+                <button class="nav-btn" onclick="switchTab('tab-gallery')">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+                    Scam Gallery & Guide
+                </button>
+            </nav>
+
+            <div class="nav-actions">
+                <button class="key-config-btn" onclick="openKeyModal()">
+                    <span class="status-indicator" id="gemini-status-dot"></span>
+                    <span id="gemini-status-text">Gemini AI Key</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="hero-section">
+        <div class="hero-bg-overlay"></div>
+        <div class="hero-content">
+            <div class="badge-pill">
+                <span class="badge-dot"></span>
+                Local & Global Employment Fraud Defense System
+            </div>
+            <h1>Scrutinize Job Recruitment Offers & Verify Official Vacancies</h1>
+            <p>Upload suspicious recruitment emails or screenshots to analyze sender domains, uncover fake offer letters, check historical fraud reports, and cross-reference official company Careers pages in real time.</p>
+            
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <span class="stat-number">100%</span>
+                    <span class="stat-label">Domain Authentication</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <span class="stat-number">Multimodal</span>
+                    <span class="stat-label">Gemini Vision & Text AI</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <span class="stat-number">Live</span>
+                    <span class="stat-label">Official Careers Lookup</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <span class="stat-number">Community</span>
+                    <span class="stat-label">Scam Incident Database</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MAIN APP CONTAINER -->
+    <main class="app-main">
+
+        <!-- ================= TAB 1: AI SCRUTINIZER ================= -->
+        <section id="tab-scrutinizer" class="tab-panel active">
+            <div class="panel-header">
+                <div class="panel-title-group">
+                    <h2>AI Recruitment Scrutinizer</h2>
+                    <p>Analyze suspicious recruitment emails, WhatsApp/Telegram messages, offer letters, or screenshots with Gemini AI.</p>
+                </div>
+
+                <!-- Input Sub-mode switcher -->
+                <div class="mode-toggle">
+                    <button class="mode-btn active" id="btn-mode-text" onclick="setScrutinizerMode('text')">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                        Email / Text
+                    </button>
+                    <button class="mode-btn" id="btn-mode-image" onclick="setScrutinizerMode('image')">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+                        Upload Screenshot
+                    </button>
+                </div>
+            </div>
+
+            <!-- Demo Pre-load Samples -->
+            <div class="demo-samples-bar">
+                <span class="demo-label">⚡ Quick Demo Samples:</span>
+                <button class="demo-pill" onclick="loadSample('amazon_data_entry')">🔴 Amazon Remote Data Entry Scam</button>
+                <button class="demo-pill" onclick="loadSample('telegram_task')">🔴 Telegram Video Task Fraud</button>
+                <button class="demo-pill" onclick="loadSample('tcs_fake_offer')">🔴 TCS Fake Offer Letter Deposit</button>
+                <button class="demo-pill" onclick="loadSample('legit_google')">🟢 Genuine Google SWE Outreach</button>
+            </div>
+
+            <div class="scrutinizer-grid">
+                <!-- Left: Input Form Card -->
+                <div class="card form-card">
+                    <!-- Text Input Mode -->
+                    <form id="form-scrutinize-text" onsubmit="handleTextAnalysis(event)">
+                        <div class="form-row-2">
+                            <div class="form-group">
+                                <label for="text-sender-email">Sender Email / Contact Handle</label>
+                                <input type="text" id="text-sender-email" placeholder="e.g. hr.recruitment-amazon@gmail.com" class="form-control">
+                                <small class="form-hint">Used for domain & typosquatting scrutiny</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="text-claimed-company">Claimed Company Name</label>
+                                <input type="text" id="text-claimed-company" placeholder="e.g. Amazon, TCS, Google" class="form-control">
+                                <small class="form-hint">Cross-checked against official careers database</small>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="text-content">Recruitment Email Body / Message Text *</label>
+                            <textarea id="text-content" rows="8" placeholder="Paste the complete recruitment email, job offer, WhatsApp text, or Telegram message here..." required class="form-control mono-font"></textarea>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary" id="btn-submit-text">
+                                <span class="btn-text">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+                                    Scrutinize with AI
+                                </span>
+                                <span class="spinner" style="display:none;"></span>
+                            </button>
+                            <button type="button" class="btn btn-secondary" onclick="resetForm('form-scrutinize-text')">Clear</button>
+                        </div>
+                    </form>
+
+                    <!-- Image Upload Mode -->
+                    <form id="form-scrutinize-image" onsubmit="handleImageAnalysis(event)" style="display: none;">
+                        <div class="form-group">
+                            <label>Upload Screenshot / Photo of Recruitment Message *</label>
+                            <div class="dropzone" id="image-dropzone" onclick="document.getElementById('file-input').click()">
+                                <input type="file" id="file-input" accept="image/*" style="display: none;" onchange="handleFileSelected(event)">
+                                <div class="dropzone-content" id="dropzone-prompt">
+                                    <div class="upload-icon">
+                                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                    </div>
+                                    <p class="dropzone-text"><strong>Click to upload</strong> or drag & drop screenshot</p>
+                                    <span class="dropzone-sub">Supports WhatsApp chats, Telegram offers, SMS, Offer Letters (PNG, JPG, WEBP)</span>
+                                </div>
+                                <div class="dropzone-preview" id="dropzone-preview" style="display: none;">
+                                    <img id="preview-img" src="" alt="Screenshot Preview">
+                                    <button type="button" class="remove-file-btn" onclick="removeSelectedFile(event)">&times;</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="image-notes">Additional Context (Optional)</label>
+                            <input type="text" id="image-notes" placeholder="e.g. Received on WhatsApp from an unknown international number claiming to be HR" class="form-control">
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary" id="btn-submit-image">
+                                <span class="btn-text">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+                                    Analyze Image with Gemini Vision
+                                </span>
+                                <span class="spinner" style="display:none;"></span>
+                            </button>
+                            <button type="button" class="btn btn-secondary" onclick="removeSelectedFile(event)">Clear</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Right: Analysis Results Display -->
+                <div class="card result-card" id="scrutinizer-result-card">
+                    <div class="empty-state" id="result-empty-state">
+                        <div class="empty-icon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        </div>
+                        <h3>Awaiting Verification</h3>
+                        <p>Submit an email or screenshot on the left or click one of the demo samples above to begin AI scrutiny.</p>
+                    </div>
+
+                    <!-- Dynamic Results Container -->
+                    <div id="result-content" style="display: none;">
+                        <!-- Top Verdict Header -->
+                        <div class="verdict-header" id="verdict-banner">
+                            <div class="verdict-score-box">
+                                <div class="score-circle" id="score-dial">
+                                    <span class="score-val" id="res-score">--</span>
+                                    <span class="score-max">/100</span>
+                                </div>
+                                <span class="score-label">Scam Probability</span>
+                            </div>
+                            <div class="verdict-info">
+                                <div class="verdict-badge" id="res-verdict-badge">CRITICAL SCAM ALERT</div>
+                                <h3 id="res-verdict-title">Definite Recruitment Fraud</h3>
+                                <p class="engine-tag" id="res-engine">Analyzed by Gemini Multimodal AI</p>
+                            </div>
+                        </div>
+
+                        <!-- Scrutiny Breakdown Cards Grid -->
+                        <div class="result-breakdown-grid">
+                            <!-- Domain Scrutiny Card -->
+                            <div class="info-card" id="card-domain-check">
+                                <div class="info-card-header">
+                                    <span class="icon-wrap">🌐</span>
+                                    <h4>Sender Domain Scrutiny</h4>
+                                </div>
+                                <div class="info-card-body" id="res-domain-body">
+                                    <p class="placeholder-text">Analyzing sender address...</p>
+                                </div>
+                            </div>
+
+                            <!-- Official Careers Vacancy Card -->
+                            <div class="info-card" id="card-career-check">
+                                <div class="info-card-header">
+                                    <span class="icon-wrap">🏢</span>
+                                    <h4>Official Careers Portal Check</h4>
+                                </div>
+                                <div class="info-card-body" id="res-career-body">
+                                    <p class="placeholder-text">Checking real company vacancies...</p>
+                                </div>
+                            </div>
+
+                            <!-- Past Scam Reports Card -->
+                            <div class="info-card" id="card-db-check">
+                                <div class="info-card-header">
+                                    <span class="icon-wrap">🛡️</span>
+                                    <h4>Prior Incident History</h4>
+                                </div>
+                                <div class="info-card-body" id="res-db-body">
+                                    <p class="placeholder-text">Checking community scam database...</p>
+                                </div>
+                            </div>
+
+                            <!-- Extracted Details Card -->
+                            <div class="info-card" id="card-details-check">
+                                <div class="info-card-header">
+                                    <span class="icon-wrap">📋</span>
+                                    <h4>Claimed Offer Specifics</h4>
+                                </div>
+                                <div class="info-card-body">
+                                    <ul class="meta-list">
+                                        <li><strong>Company:</strong> <span id="res-company">--</span></li>
+                                        <li><strong>Position:</strong> <span id="res-role">--</span></li>
+                                        <li><strong>Channel:</strong> <span id="res-channel">--</span></li>
+                                        <li><strong>Compensation:</strong> <span id="res-salary">--</span></li>
+                                        <li><strong>Fee Demanded:</strong> <span id="res-fee">--</span></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Red Flags List -->
+                        <div class="flags-section">
+                            <h4>🚩 Scrutiny Red Flags Detected</h4>
+                            <ul class="red-flags-list" id="res-red-flags"></ul>
+                        </div>
+
+                        <!-- Forensic Analysis Text -->
+                        <div class="analysis-section">
+                            <h4>🔬 Detailed AI Forensic Assessment</h4>
+                            <div class="analysis-prose" id="res-analysis-text"></div>
+                        </div>
+
+                        <!-- Recommended Actions -->
+                        <div class="actions-section">
+                            <h4>🛡️ Safe Next Steps</h4>
+                            <ul class="action-steps" id="res-recommendations"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TAB 2: OFFICIAL CAREERS VERIFIER ================= -->
+        <section id="tab-careers" class="tab-panel">
+            <div class="panel-header">
+                <div class="panel-title-group">
+                    <h2>Official Careers Page & Vacancy Verifier</h2>
+                    <p>Cross-check if a job post seen on WhatsApp, Telegram, LinkedIn, or job boards is actually published on the company's verified corporate website.</p>
+                </div>
+            </div>
+
+            <!-- Verification Search Bar -->
+            <div class="card search-card">
+                <form id="form-verify-career" onsubmit="handleCareerVerification(event)">
+                    <div class="search-inputs-row">
+                        <div class="form-group flex-1">
+                            <label for="career-company-input">Target Company Name *</label>
+                            <input type="text" id="career-company-input" placeholder="e.g. Amazon, Google, TCS, Infosys, Wipro, Microsoft..." required class="form-control">
+                        </div>
+                        <div class="form-group flex-1">
+                            <label for="career-role-input">Job Title / Vacancy Seen on Other Platforms</label>
+                            <input type="text" id="career-role-input" placeholder="e.g. Remote Data Entry Clerk, Systems Engineer, Video Reviewer..." class="form-control">
+                        </div>
+                        <div class="form-group align-end">
+                            <button type="submit" class="btn btn-primary btn-search" id="btn-search-career">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                                Verify Vacancy
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Quick Company Shortcuts -->
+                <div class="quick-companies">
+                    <span class="quick-label">Certified Portals:</span>
+                    <button class="quick-comp-btn" onclick="searchSpecificVacancy('Tata Consultancy Services (TCS)', 'Systems Engineer')">TCS</button>
+                    <button class="quick-comp-btn" onclick="searchSpecificVacancy('Amazon', 'Software Development Engineer II')">Amazon AWS</button>
+                    <button class="quick-comp-btn" onclick="searchSpecificVacancy('Google', 'Software Engineer III')">Google</button>
+                    <button class="quick-comp-btn" onclick="searchSpecificVacancy('Infosys', 'Senior Systems Engineer')">Infosys</button>
+                    <button class="quick-comp-btn" onclick="searchSpecificVacancy('Microsoft', 'Applied Data Scientist')">Microsoft</button>
+                    <button class="quick-comp-btn" onclick="searchSpecificVacancy('Amazon', 'Remote Data Entry Clerk')">⚠️ Test Fake Amazon Data Entry</button>
+                </div>
+            </div>
+
+            <!-- Career Verification Display Area -->
+            <div id="career-result-container" style="display: none; margin-top: 1.5rem;"></div>
+
+            <!-- List of All Certified Portals -->
+            <div class="card directory-card" style="margin-top: 2rem;">
+                <div class="card-header">
+                    <h3>Directory of Verified Corporate Career Portals</h3>
+                    <p>Always apply directly through official domains. Legitimate corporations never recruit via personal WhatsApp or Telegram.</p>
+                </div>
+                <div class="company-grid" id="companies-directory-grid">
+                    <!-- Populated dynamically via JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TAB 3: SCAM DATABASE & HISTORY ================= -->
+        <section id="tab-database" class="tab-panel">
+            <div class="panel-header">
+                <div class="panel-title-group">
+                    <h2>Scam Tracker & Prior Incident History</h2>
+                    <p>Search whether a company name, recruiter email, phone number, or domain has been reported by past jobseekers.</p>
+                </div>
+            </div>
+
+            <div class="card search-card">
+                <form id="form-search-history" onsubmit="handleHistorySearch(event)">
+                    <div class="search-inputs-row">
+                        <div class="form-group flex-2">
+                            <label for="history-query-input">Search Company, Recruiter Email, Phone or Domain</label>
+                            <input type="text" id="history-query-input" placeholder="e.g. Amazon, tcs-careers-india.net, +91 98765, zara-tasks" required class="form-control">
+                        </div>
+                        <div class="form-group align-end">
+                            <button type="submit" class="btn btn-primary" id="btn-search-history">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                                Check History
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Search Results for History -->
+            <div id="history-results-area" style="display: none; margin-top: 1.5rem;"></div>
+
+            <!-- Recent Community Scam Alerts Feed -->
+            <div class="card recent-reports-card" style="margin-top: 2rem;">
+                <div class="card-header flex-between">
+                    <div>
+                        <h3>Live Community Scam Alerts Feed</h3>
+                        <p>Recent verified incidents reported by real jobseekers worldwide.</p>
+                    </div>
+                    <button class="btn btn-outline" onclick="loadRecentReports()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                        Refresh Feed
+                    </button>
+                </div>
+                <div class="reports-feed" id="recent-reports-container">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TAB 4: REPORT A SCAM ================= -->
+        <section id="tab-report" class="tab-panel">
+            <div class="panel-header">
+                <div class="panel-title-group">
+                    <h2>File a Scam Report</h2>
+                    <p>Protect fellow jobseekers. Document fraudulent recruiters, fake appointment letters, or Telegram task rings in the community database.</p>
+                </div>
+            </div>
+
+            <div class="card form-card-wide">
+                <form id="form-submit-scam" onsubmit="handleReportSubmission(event)">
+                    <div class="form-row-2">
+                        <div class="form-group">
+                            <label for="rep-company">Company Name Impersonated / Claimed *</label>
+                            <input type="text" id="rep-company" placeholder="e.g. Amazon, TCS, Zara Tasks, Apex Tech" required class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="rep-scam-type">Scam Category *</label>
+                            <select id="rep-scam-type" class="form-control" required>
+                                <option value="Advance Fee / Equipment Scam">Advance Fee / Equipment Deposit Scam</option>
+                                <option value="Telegram Task Fraud">Telegram Task / Like & Subscribe Fraud</option>
+                                <option value="Fake Offer Letter">Fake Offer Letter / Training Kit Fee</option>
+                                <option value="Cheque Cashing Scam">Cheque Cashing / Home Office Check Scam</option>
+                                <option value="Ghost Job / Phishing">Ghost Job / Identity Phishing (Aadhaar/SSN)</option>
+                                <option value="Pyramid / MLM Scheme">Pyramid Scheme / Paid Registration</option>
+                                <option value="Other Scam">Other Employment Fraud</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row-3">
+                        <div class="form-group">
+                            <label for="rep-email">Recruiter Email Address</label>
+                            <input type="text" id="rep-email" placeholder="e.g. hr.careers@gmail.com" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="rep-phone">Recruiter Phone / WhatsApp Handle</label>
+                            <input type="text" id="rep-phone" placeholder="e.g. +91 98111... or @HR_Scammer" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="rep-domain">Website / Domain Claimed</label>
+                            <input type="text" id="rep-domain" placeholder="e.g. amazon-job-verify.net" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-row-2">
+                        <div class="form-group">
+                            <label for="rep-job-title">Job Title Offered</label>
+                            <input type="text" id="rep-job-title" placeholder="e.g. Data Entry Clerk, Video Rater" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="rep-loss">Financial Loss Incurred ($ / ₹ / Other)</label>
+                            <input type="number" step="any" id="rep-loss" placeholder="0 if stopped in time" value="0" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="rep-description">Detailed Incident Description *</label>
+                        <textarea id="rep-description" rows="5" placeholder="Explain how they contacted you, what payment or personal documents they demanded, and what red flags you observed..." required class="form-control"></textarea>
+                    </div>
+
+                    <div class="form-row-2">
+                        <div class="form-group">
+                            <label for="rep-evidence">Attach Evidence Screenshot (Optional)</label>
+                            <input type="file" id="rep-evidence" accept="image/*" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="rep-name">Your Name / City (Optional - Kept Anonymous)</label>
+                            <input type="text" id="rep-name" placeholder="e.g. Jobseeker from Mumbai" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary" id="btn-submit-report">
+                            <span class="btn-text">Submit Report to SafeJobs Database</span>
+                            <span class="spinner" style="display:none;"></span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- ================= TAB 5: REAL SCAM GALLERY & GUIDE ================= -->
+        <section id="tab-gallery" class="tab-panel">
+            <div class="panel-header">
+                <div class="panel-title-group">
+                    <h2>Real-World Job Scam Gallery & Defense Guide</h2>
+                    <p>Examine documented real-world fraudulent tactics, fake offer letter anatomy, and official verification checklists.</p>
+                </div>
+            </div>
+
+            <div class="gallery-grid">
+                <!-- Card 1 -->
+                <div class="gallery-card">
+                    <div class="gallery-img-wrap">
+                        <img src="/static/images/fake-offer-scam.jpg" alt="Fake Offer Letter Verification" class="gallery-img">
+                        <span class="img-badge badge-danger">Document Scam</span>
+                    </div>
+                    <div class="gallery-content">
+                        <h3>Anatomy of a Fake Offer Letter</h3>
+                        <p>Scammers forge corporate letterheads (TCS, Wipro, Infosys, Amazon) and demand "refundable medical examination" or "laptop insurance fees" before the joining date. Real companies NEVER charge candidates.</p>
+                        <div class="gallery-tags">
+                            <span>Advance Fee</span>
+                            <span>Forged Seals</span>
+                            <span>Direct Deposit</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="gallery-card">
+                    <div class="gallery-img-wrap">
+                        <img src="/static/images/remote-job-scam-chat.jpg" alt="Telegram Task Fraud" class="gallery-img">
+                        <span class="img-badge badge-warning">Task Scam</span>
+                    </div>
+                    <div class="gallery-content">
+                        <h3>Telegram & WhatsApp "Daily Task" Fraud</h3>
+                        <p>Victims are promised ₹2,000–₹10,000 daily for liking videos, rating hotel listings, or writing fake reviews. Scammers pay small amounts at first, then demand "VIP prepaid investments" that cannot be withdrawn.</p>
+                        <div class="gallery-tags">
+                            <span>Telegram Groups</span>
+                            <span>Ponzi Trap</span>
+                            <span>Crypto/UPI</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="gallery-card">
+                    <div class="gallery-img-wrap">
+                        <img src="/static/images/email-phishing-analysis.jpg" alt="Domain Phishing Analysis" class="gallery-img">
+                        <span class="img-badge badge-primary">Domain Spoofing</span>
+                    </div>
+                    <div class="gallery-content">
+                        <h3>Domain Typosquatting & Lookalike Portals</h3>
+                        <p>Attackers register domains like <code>amazon-careers-verify.com</code> or <code>infosys-jobs-portal.xyz</code> or use free Gmail accounts to deceive candidates into thinking they are speaking to HR.</p>
+                        <div class="gallery-tags">
+                            <span>Lookalike URLs</span>
+                            <span>Free Webmails</span>
+                            <span>Credential Phishing</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="gallery-card">
+                    <div class="gallery-img-wrap">
+                        <img src="/static/images/mobile-scam-alert.jpg" alt="Mobile SMS Job Scam" class="gallery-img">
+                        <span class="img-badge badge-danger">SMS & Chat Trap</span>
+                    </div>
+                    <div class="gallery-content">
+                        <h3>Unsolicited SMS & WhatsApp Offers</h3>
+                        <p>Receiving "Congratulations! Your resume was shortlisted for a 2-hour remote job" from unknown international country codes (+62, +234, +1, +44) without ever applying is an automatic red flag.</p>
+                        <div class="gallery-tags">
+                            <span>Unsolicited SMS</span>
+                            <span>WhatsApp Recruiters</span>
+                            <span>Identity Theft</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 5 -->
+                <div class="gallery-card">
+                    <div class="gallery-img-wrap">
+                        <img src="/static/images/verified-careers.jpg" alt="Verified Career Search" class="gallery-img">
+                        <span class="img-badge badge-success">Golden Rules</span>
+                    </div>
+                    <div class="gallery-content">
+                        <h3>Safe Job Search Golden Rules</h3>
+                        <p>1. Only apply through official <code>.com</code> or verified corporate ATS portals.<br>
+                        2. Interviews are conducted face-to-face or via enterprise video (Teams, Zoom, Meet), NEVER pure text on Telegram.<br>
+                        3. If they ask you for even $1, it is 100% a scam.</p>
+                        <div class="gallery-tags">
+                            <span>Official ATS</span>
+                            <span>Zero Fee Policy</span>
+                            <span>Video Interview</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- GEMINI API KEY MODAL -->
+    <div class="modal-overlay" id="key-modal" onclick="closeKeyModal(event)">
+        <div class="modal-card" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3>Gemini AI Integration Configuration</h3>
+                <button class="modal-close" onclick="closeKeyModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>SafeJobs is integrated with Google's <strong>Gemini 1.5 Flash Multimodal AI</strong> for deep recruitment email scrutiny, domain forensic analysis, and screenshot OCR inspection.</p>
+                
+                <div class="form-group" style="margin-top: 1rem;">
+                    <label for="gemini-key-input">Enter Gemini API Key:</label>
+                    <input type="password" id="gemini-key-input" placeholder="AIzaSy..." class="form-control mono-font">
+                    <small class="form-hint">Your key is stored locally in your browser. Get a free API key at <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:var(--accent-cyan);">Google AI Studio</a>.</small>
+                </div>
+
+                <div id="key-test-feedback" style="display:none; margin-top:0.75rem;"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="testGeminiKey()">Test Connection</button>
+                <button type="button" class="btn btn-primary" onclick="saveGeminiKey()">Save Key</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NOTIFICATION TOAST -->
+    <div id="toast" class="toast"></div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
