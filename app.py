@@ -196,18 +196,31 @@ def api_recent_reports():
     reports = get_recent_reports(limit)
     return jsonify({"success": True, "reports": reports})
 
-# ----------------- GEMINI KEY VALIDATOR -----------------
+# ----------------- GEMINI KEY VALIDATOR & STATUS -----------------
+
+@app.route('/api/gemini/status', methods=['GET'])
+def api_gemini_status():
+    """Returns the current Gemini API key status from environment or cache."""
+    from services.gemini_analyzer import get_effective_api_key, discover_working_model
+    key = get_effective_api_key()
+    has_key = bool(key and len(key) > 10)
+    model = discover_working_model(key) if has_key else "gemini-3.8-flash"
+    return jsonify({"has_key": has_key, "model": model})
 
 @app.route('/api/gemini/test-key', methods=['POST'])
 def api_test_key():
-    """Tests if a user provided Gemini API key is functional."""
+    """Tests if a user provided Gemini API key or .env key is functional."""
+    from services.gemini_analyzer import get_effective_api_key, discover_working_model, ping_gemini
     data = request.get_json() or {}
     key = data.get('api_key', '').strip()
     if not key:
-        return jsonify({"valid": False, "message": "API key is empty."}), 400
+        key = get_effective_api_key()
+    if not key:
+        return jsonify({"valid": False, "message": "No API key found in request or .env file."}), 400
     try:
-        res = call_gemini_api("Return a short JSON object: {\"status\": \"ok\"}", api_key=key)
-        return jsonify({"valid": True, "message": "Gemini API Key verified and active!"})
+        model = discover_working_model(key)
+        ping_gemini(key, model_name=model)
+        return jsonify({"valid": True, "message": f"Connected to Google Gemini ({model}) successfully!", "model": model})
     except Exception as e:
         return jsonify({"valid": False, "message": f"Verification failed: {str(e)}"}), 400
 

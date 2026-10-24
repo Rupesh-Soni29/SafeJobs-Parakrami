@@ -3,10 +3,20 @@ import json
 import base64
 import re
 import requests
+from dotenv import load_dotenv
 from config import Config
 from services.domain_checker import scrutinize_domain, extract_email_address, extract_domain
 
-GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent"
+# Preferred models in priority order for Google Generative AI
+PREFERRED_MODELS = [
+    "gemini-flash-lite-latest",
+    "gemini-3.8-flash",
+    "gemini-flash-latest",
+    "gemini-2.5-flash",
+    "gemini-pro"
+]
+
+CACHED_WORKING_MODEL = None
 
 SYSTEM_INSTRUCTION = """
 You are SafeJobs AI, an elite cybersecurity fraud investigator and corporate recruitment verification auditor.
@@ -49,10 +59,48 @@ You MUST output strictly raw, valid JSON with no markdown wrapping, no backticks
 """
 
 def get_effective_api_key(custom_key=None):
-    """Retrieves API key from parameter or environment."""
+    """Retrieves API key from parameter or environment, re-reading .env if needed."""
     if custom_key and len(custom_key.strip()) > 10:
         return custom_key.strip()
-    return Config.GEMINI_API_KEY.strip() if Config.GEMINI_API_KEY else ""
+    load_dotenv(override=True)
+    env_key = os.getenv("GEMINI_API_KEY", "") or Config.GEMINI_API_KEY or ""
+    return env_key.strip()
+
+def ping_gemini(api_key, model_name="gemini-3.8-flash"):
+    """Quick lightweight ping to verify that API key and model work."""
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={api_key}"
+    headers = {"Content-Type": "application/json"}
+    payload = {
+        "contents": [{"parts": [{"text": "ping"}]}],
+        "generationConfig": {"maxOutputTokens": 10}
+    }
+    resp = requests.post(url, headers=headers, json=payload, timeout=12)
+    if resp.status_code == 200:
+        return True
+    else:
+        raise Exception(f"Gemini API returned HTTP {resp.status_code}: {resp.text}")
+
+def discover_working_model(api_key):
+    """
+    Finds the optimal supported model for the given API key.
+    Tests gemini-3.8-flash first, then falls back to other models or model list.
+    """
+    global CACHED_WORKING_MODEL
+    if CACHED_WORKING_MODEL:
+        return CACHED_WORKING_MODEL
+
+    # Fast check: gemini-3.8-flash is the primary 2026 model
+    for candidate in PREFERRED_MODELS:
+        try:
+            if ping_gemini(api_key, candidate):
+                CACHED_WORKING_MODEL = candidate
+                return candidate
+        except Exception:
+            continue
+
+    # Fallback to default
+    CACHED_WORKING_MODEL = "gemini-3.8-flash"
+    return CACHED_WORKING_MODEL
 
 def analyze_recruitment_text(text_content, sender_email="", claimed_company="", custom_key=None):
     """
@@ -66,17 +114,18 @@ def analyze_recruitment_text(text_content, sender_email="", claimed_company="", 
     if detected_email:
         domain_data = scrutinize_domain(detected_email, claimed_company)
     
-    # If Gemini API key is available, call Gemini 1.5 Flash
+    # If Gemini API key is available, call Gemini
     if api_key:
         try:
+            model_name = discover_working_model(api_key)
             ai_result = call_gemini_api(
                 prompt=f"Scrutinize this recruitment message and sender details:\n\nSender Email/Contact: {sender_email}\nClaimed Company: {claimed_company}\n\nMessage Body:\n{text_content}",
-                api_key=api_key
+                api_key=api_key,
+                model_name=model_name
             )
             if ai_result:
-                # Merge domain insights into AI result
                 ai_result["domain_analysis"] = domain_data
-                ai_result["analysis_engine"] = "Gemini 1.5 Flash Multimodal AI"
+                ai_result["analysis_engine"] = f"Gemini ({model_name}) AI"
                 return ai_result
         except Exception as e:
             print(f"Gemini API call failed, falling back to local heuristic engine: {e}")
@@ -84,7 +133,7 @@ def analyze_recruitment_text(text_content, sender_email="", claimed_company="", 
     # Fallback to local heuristic engine
     result = run_heuristic_analysis(text_content, detected_email, claimed_company)
     result["domain_analysis"] = domain_data
-    result["analysis_engine"] = "SafeJobs Advanced Heuristic Engine (Connect Gemini API Key for Multimodal AI)"
+    result["analysis_engine"] = "SafeJobs Advanced Heuristic Engine (Add Gemini API Key for Multimodal AI)"
     return result
 
 def analyze_recruitment_image(image_path, additional_notes="", custom_key=None):
@@ -95,7 +144,7 @@ def analyze_recruitment_image(image_path, additional_notes="", custom_key=None):
     
     if api_key and os.path.exists(image_path):
         try:
-            # Read and encode image
+            model_name = discover_working_model(api_key)
             with open(image_path, "rb") as f:
                 img_bytes = f.read()
             b64_data = base64.b64encode(img_bytes).decode("utf-8")
@@ -133,7 +182,7 @@ def analyze_recruitment_image(image_path, additional_notes="", custom_key=None):
                 }
             }
 
-            url = f"{GEMINI_API_URL}?key={api_key}"
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={api_key}"
             headers = {"Content-Type": "application/json"}
             resp = requests.post(url, headers=headers, json=payload, timeout=30)
             
@@ -142,14 +191,14 @@ def analyze_recruitment_image(image_path, additional_notes="", custom_key=None):
                 candidate_text = data["candidates"][0]["content"]["parts"][0]["text"]
                 cleaned_text = clean_json_response(candidate_text)
                 parsed = json.loads(cleaned_text)
-                parsed["analysis_engine"] = "Gemini 1.5 Flash Vision Multimodal AI"
+                parsed["analysis_engine"] = f"Gemini ({model_name}) Vision Multimodal AI"
                 return parsed
             else:
                 print(f"Gemini Vision API error HTTP {resp.status_code}: {resp.text}")
         except Exception as e:
             print(f"Vision API exception: {e}")
 
-    # Fallback image heuristic: Inspect file name and context
+    # Fallback image heuristic
     fallback = run_heuristic_analysis(
         f"Screenshot uploaded for analysis. Context: {additional_notes}",
         sender_email="",
@@ -159,9 +208,9 @@ def analyze_recruitment_image(image_path, additional_notes="", custom_key=None):
     fallback["red_flags"].append("Image uploaded. For complete OCR extraction of visual letterheads, stamps, and chat screenshots, enter your Gemini API Key in the top navigation bar.")
     return fallback
 
-def call_gemini_api(prompt, api_key):
+def call_gemini_api(prompt, api_key, model_name="gemini-3.8-flash"):
     """Calls Gemini REST endpoint with strict JSON schema."""
-    url = f"{GEMINI_API_URL}?key={api_key}"
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={api_key}"
     headers = {"Content-Type": "application/json"}
     
     payload = {

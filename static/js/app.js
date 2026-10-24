@@ -736,15 +736,29 @@ async function handleReportSubmission(e) {
 }
 
 // ================= GEMINI API KEY CONFIG =================
-function initGeminiKey() {
-    const key = localStorage.getItem('safejobs_gemini_key');
+async function initGeminiKey() {
+    const localKey = localStorage.getItem('safejobs_gemini_key');
     const dot = document.getElementById('gemini-status-dot');
     const txt = document.getElementById('gemini-status-text');
 
-    if (key && key.length > 10) {
+    if (localKey && localKey.length > 10) {
         dot.classList.add('connected');
         txt.innerText = 'Gemini AI Ready';
-    } else {
+        return;
+    }
+
+    // Check if backend has .env key
+    try {
+        const res = await fetch('/api/gemini/status');
+        const data = await res.json();
+        if (data.has_key) {
+            dot.classList.add('connected');
+            txt.innerText = `${data.model || 'Gemini'} Ready (.env)`;
+        } else {
+            dot.classList.remove('connected');
+            txt.innerText = 'Gemini AI Key';
+        }
+    } catch (e) {
         dot.classList.remove('connected');
         txt.innerText = 'Gemini AI Key';
     }
@@ -754,11 +768,27 @@ function getSavedGeminiKey() {
     return localStorage.getItem('safejobs_gemini_key') || '';
 }
 
-function openKeyModal() {
+async function openKeyModal() {
     const modal = document.getElementById('key-modal');
     const input = document.getElementById('gemini-key-input');
-    input.value = getSavedGeminiKey();
-    document.getElementById('key-test-feedback').style.display = 'none';
+    const localKey = getSavedGeminiKey();
+    input.value = localKey;
+    
+    const fb = document.getElementById('key-test-feedback');
+    fb.style.display = 'none';
+
+    // If localKey is empty, check if .env has one
+    if (!localKey) {
+        try {
+            const res = await fetch('/api/gemini/status');
+            const data = await res.json();
+            if (data.has_key) {
+                fb.style.display = 'block';
+                fb.innerHTML = `<span style="color:var(--success-green); font-size:0.85rem;">✔️ A Gemini API Key is loaded from <code>.env</code> file (Model: <strong>${data.model}</strong>). You can leave this input blank or override it below.</span>`;
+            }
+        } catch (e) {}
+    }
+
     modal.classList.add('active');
 }
 
@@ -775,7 +805,7 @@ function saveGeminiKey() {
         showToast("Gemini API Key saved locally.");
     } else {
         localStorage.removeItem('safejobs_gemini_key');
-        showToast("Gemini API Key cleared. Local heuristics active.");
+        showToast("Using server .env Gemini key or local heuristics.");
     }
     initGeminiKey();
     closeKeyModal();
@@ -787,11 +817,6 @@ async function testGeminiKey() {
     fb.style.display = 'block';
     fb.innerHTML = '<span class="spinner"></span> Testing connection to Google Gemini API...';
 
-    if (!key) {
-        fb.innerHTML = '<span style="color:var(--danger-red);">Please enter an API key first.</span>';
-        return;
-    }
-
     try {
         const res = await fetch('/api/gemini/test-key', {
             method: 'POST',
@@ -801,6 +826,7 @@ async function testGeminiKey() {
         const data = await res.json();
         if (data.valid) {
             fb.innerHTML = `<span style="color:var(--success-green); font-weight:700;">✔️ Success: ${data.message}</span>`;
+            initGeminiKey();
         } else {
             fb.innerHTML = `<span style="color:var(--danger-red);">❌ Error: ${data.message}</span>`;
         }
