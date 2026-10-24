@@ -21,8 +21,14 @@ from services.domain_checker import scrutinize_domain
 app = Flask(__name__)
 app.config.from_object(Config)
 
-# Ensure database is initialized
+# Ensure upload and database directories exist
+os.makedirs(Config.UPLOAD_FOLDER, exist_ok=True)
+os.makedirs(os.path.dirname(Config.DATABASE_PATH), exist_ok=True)
+
+# Ensure database is initialized & pre-seeded with verified company data
 init_db()
+from database.seed_data import seed
+seed()
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in Config.ALLOWED_EXTENSIONS
